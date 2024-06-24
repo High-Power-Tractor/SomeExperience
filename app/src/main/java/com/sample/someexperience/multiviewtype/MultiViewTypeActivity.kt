@@ -21,6 +21,7 @@ class MultiViewTypeActivity : AppCompatActivity() {
 
     private fun initView(){
         recycler_view.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
+//        recycler_view.adapter = ContentAdapter_Old()
         recycler_view.adapter = ContentAdapter(recycler_view)
     }
 
@@ -44,6 +45,42 @@ class MultiViewTypeActivity : AppCompatActivity() {
             return ViewHolderConfig(VIEW_TYPE_NORMAL, {
                 ViewHolderNormal(it)
             })
+        }
+
+        override fun getItemCount(): Int {
+            return 20
+        }
+
+    }
+
+    class ContentAdapter_Old() : RecyclerView.Adapter<CommonViewHolder>() {
+        val VIEW_TYPE01 = 1
+        val VIEW_TYPE02 = 2
+        val VIEW_TYPE03 = 3
+        val VIEW_TYPE_NORMAL = 4
+
+        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CommonViewHolder {
+            if(viewType == VIEW_TYPE01){
+                return ViewHolder01(parent)
+            }
+            if(viewType == VIEW_TYPE02){
+                return ViewHolder02(parent)
+            }
+            if(viewType == VIEW_TYPE03){
+                return ViewHolder03(parent)
+            }
+            return ViewHolderNormal(parent)
+        }
+
+        override fun onBindViewHolder(holder: CommonViewHolder, position: Int) {
+            holder.bindData(position)
+        }
+
+        override fun getItemViewType(position: Int): Int {
+            if(position == 0) return VIEW_TYPE01
+            if(position == 3) return VIEW_TYPE02
+            if(position == 5) return VIEW_TYPE03
+            return VIEW_TYPE_NORMAL
         }
 
         override fun getItemCount(): Int {
