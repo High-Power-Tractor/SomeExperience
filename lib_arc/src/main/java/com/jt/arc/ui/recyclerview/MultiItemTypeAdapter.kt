@@ -5,16 +5,16 @@ import androidx.recyclerview.widget.RecyclerView
 
 /**
  * 用于多ViewType列表显示。目的：让每个ViewType对应处理逻辑能相互隔离开。
- * 每个ViewType对应一个ItemAdapter，RecyclerView.Adapter中的onCreateViewHolder，onBindViewHolder等实现都指派给对应的ItemAdapter执行。
+ * 每个ViewType对应一个SubAdapter，RecyclerView.Adapter中的onCreateViewHolder，onBindViewHolder等实现都指派给对应的SubAdapter执行。
  */
-class MultiItemTypeAdapter<T>(vararg itemAdapters: ItemAdapter<T, *>): RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class MultiItemTypeAdapter<T>(vararg subAdapters: SubAdapter<T, *>): RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     private val datas: ArrayList<T> = arrayListOf()
-    private val itemAdapterMap = LinkedHashMap<Int, ItemAdapter<T, *>>()
-    private val posAndViewTypeMap = HashMap<Int, Int>()
+    private val viewType_subAdapterMap = LinkedHashMap<Int, SubAdapter<T, *>>()
+    private val position_viewTypeMap = HashMap<Int, Int>()
 
     init {
-        for (item in itemAdapters) {
-            registerItemAdapter(item)
+        for (item in subAdapters) {
+            registerSubAdapter(item)
         }
     }
 
@@ -28,30 +28,30 @@ class MultiItemTypeAdapter<T>(vararg itemAdapters: ItemAdapter<T, *>): RecyclerV
         return datas
     }
 
-    fun registerItemAdapter(itemAdapter: ItemAdapter<T, *>){
-        if(itemAdapterMap.containsKey(itemAdapter.getItemViewType())){
-            throw Exception("already exist viewType ${itemAdapter.getItemViewType()}")
+    fun registerSubAdapter(subAdapter: SubAdapter<T, *>){
+        if(viewType_subAdapterMap.containsKey(subAdapter.getItemViewType())){
+            throw Exception("already exist viewType ${subAdapter.getItemViewType()}")
         }
-        itemAdapterMap[itemAdapter.getItemViewType()] = itemAdapter
-        itemAdapter.attach(this)
+        viewType_subAdapterMap[subAdapter.getItemViewType()] = subAdapter
+        subAdapter.attach(this)
 
         //确保DefaultItemAdaper只注册一次，且排在最后面
-        var defaultItemAdapterKey = -1
-        var defaultItemAdapterSize = 0
-        for (item in itemAdapterMap.entries) {
-            if(item.value is DefaultItemAdaper) {
-                defaultItemAdapterKey = item.key
-                defaultItemAdapterSize++
+        var defaultSubAdapterKey = -1
+        var defaultSubAdapterSize = 0
+        for (item in viewType_subAdapterMap.entries) {
+            if(item.value is DefaultSubAdaper) {
+                defaultSubAdapterKey = item.key
+                defaultSubAdapterSize++
             }
         }
-        if(defaultItemAdapterSize > 1) throw Exception("DefaultItemAdaper register more than once")
-        itemAdapterMap.remove(defaultItemAdapterKey)?.let { defaultItemAdapter ->
-            itemAdapterMap[defaultItemAdapterKey] = defaultItemAdapter
+        if(defaultSubAdapterSize > 1) throw Exception("DefaultItemAdaper register more than once")
+        viewType_subAdapterMap.remove(defaultSubAdapterKey)?.let { defaultSubAdapter ->
+            viewType_subAdapterMap[defaultSubAdapterKey] = defaultSubAdapter
         }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
-        return itemAdapterMap[viewType]?.onCreateViewHolder(parent)
+        return viewType_subAdapterMap[viewType]?.onCreateViewHolder(parent)
             ?: throw Exception("no exist viewType ${viewType}")
     }
 
@@ -60,16 +60,16 @@ class MultiItemTypeAdapter<T>(vararg itemAdapters: ItemAdapter<T, *>): RecyclerV
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        val viewType =  posAndViewTypeMap[position]?: throw Exception("no exist position ${position}")
-        val itemAdapter = itemAdapterMap[viewType]?: throw Exception("no exist viewType ${viewType}")
-        itemAdapter.onBindViewHolder_inner(holder, position)
+        val viewType =  position_viewTypeMap[position]?: throw Exception("no exist position ${position}")
+        val subAdapter = viewType_subAdapterMap[viewType]?: throw Exception("no exist viewType ${viewType}")
+        subAdapter.onBindViewHolder_inner(holder, position)
     }
 
     override fun getItemViewType(position: Int): Int {
-        for (item in itemAdapterMap.values) {
+        for (item in viewType_subAdapterMap.values) {
             if(item.isSameViewType(position)) {
                 val viewType = item.getItemViewType()
-                posAndViewTypeMap[position] = viewType
+                position_viewTypeMap[position] = viewType
                 return viewType
             }
         }

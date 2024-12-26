@@ -3,7 +3,7 @@ package com.jt.arc.ui.recyclerview
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 
-abstract class ItemAdapter<T, VH : RecyclerView.ViewHolder> {
+abstract class SubAdapter<T, VH : RecyclerView.ViewHolder> {
     private var hostRecyclerViewAdapter: MultiItemTypeAdapter<T>? = null
 
     abstract fun onCreateViewHolder(parent: ViewGroup): VH
