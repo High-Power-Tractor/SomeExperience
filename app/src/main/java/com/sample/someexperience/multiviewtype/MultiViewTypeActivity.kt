@@ -27,7 +27,7 @@ class MultiViewTypeActivity : AppCompatActivity() {
         val adapter = MultiItemTypeAdapter<ValueBean>(NormalSubAdapter(), HeaderSubAdapter()) //构造函数中注册
         adapter.registerSubAdapter(ADSubAdapter()) //调用方法注册
         adapter.registerSubAdapter(FooterSubAdapter())
-        adapter.updateData(genListData())
+        adapter.syncData(genListData())
         recycler_view.adapter = adapter
     }
 
@@ -115,8 +115,8 @@ class MultiViewTypeActivity : AppCompatActivity() {
     }
 
     //常规布局
-    //DefaultItemAdaper默认可以匹配任何一个position，所以不需要实现isSameViewType()方法;
-    //匹配规则：优先匹配其他ItemAdaper，都匹配不上在用这个兜底。
+    //DefaultSubAdapter默认可以匹配任何一个position，所以不需要实现isSameViewType()方法;
+    //匹配规则：优先匹配其他SubAdapter，都匹配不上在用这个兜底。
     //通常用于其他ViewType都有详细的匹配规则，但是自己的匹配规则不明确或繁杂（先把其他的都排除，剩下的就是自己的）
     class NormalSubAdapter: DefaultSubAdaper<ValueBean, NormalSubAdapter.NormalItemViewHolder>(){
         override fun onCreateViewHolder(parent: ViewGroup): NormalItemViewHolder {
