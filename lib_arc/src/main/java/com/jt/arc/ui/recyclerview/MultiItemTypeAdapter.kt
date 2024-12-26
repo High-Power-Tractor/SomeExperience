@@ -3,18 +3,29 @@ package com.jt.arc.ui.recyclerview
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 
-class MultiItemTypeAdapter<T>: RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+/**
+ * 用于多ViewType列表显示。目的：让每个ViewType对应处理逻辑能相互隔离开。
+ * 每个ViewType对应一个ItemAdapter，RecyclerView.Adapter中的onCreateViewHolder，onBindViewHolder等实现都指派给对应的ItemAdapter执行。
+ */
+class MultiItemTypeAdapter<T>(vararg itemAdapters: ItemAdapter<T, *>): RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     private val datas: ArrayList<T> = arrayListOf()
     private val itemAdapterMap = LinkedHashMap<Int, ItemAdapter<T, *>>()
     private val posAndViewTypeMap = HashMap<Int, Int>()
 
+    init {
+        for (item in itemAdapters) {
+            registerItemAdapter(item)
+        }
+    }
+
     fun updateData(data: List<T>){
         datas.clear()
         datas.addAll(data)
-        for (item in itemAdapterMap.values) {
-            item.updateData(datas)
-        }
         notifyDataSetChanged()
+    }
+
+    fun getData(): List<T>{
+        return datas
     }
 
     fun registerItemAdapter(itemAdapter: ItemAdapter<T, *>){
@@ -22,6 +33,7 @@ class MultiItemTypeAdapter<T>: RecyclerView.Adapter<RecyclerView.ViewHolder>() {
             throw Exception("already exist viewType ${itemAdapter.getItemViewType()}")
         }
         itemAdapterMap[itemAdapter.getItemViewType()] = itemAdapter
+        itemAdapter.attach(this)
 
         //确保DefaultItemAdaper只注册一次，且排在最后面
         var defaultItemAdapterKey = -1
@@ -39,7 +51,7 @@ class MultiItemTypeAdapter<T>: RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
-        return itemAdapterMap[viewType]?.onCreateViewHolder(parent, viewType)
+        return itemAdapterMap[viewType]?.onCreateViewHolder(parent)
             ?: throw Exception("no exist viewType ${viewType}")
     }
 

@@ -4,9 +4,9 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 
 abstract class ItemAdapter<T, VH : RecyclerView.ViewHolder> {
-    protected val datas: ArrayList<T> = arrayListOf()
+    private var hostRecyclerViewAdapter: MultiItemTypeAdapter<T>? = null
 
-    abstract fun onCreateViewHolder(parent: ViewGroup, viewType: Int): VH
+    abstract fun onCreateViewHolder(parent: ViewGroup): VH
 
     abstract fun onBindViewHolder(holder: VH, position: Int)
 
@@ -18,12 +18,15 @@ abstract class ItemAdapter<T, VH : RecyclerView.ViewHolder> {
         onBindViewHolder(holder as VH, position)
     }
 
-    fun getItemCount(): Int {
-        return datas.size
+    internal fun attach(apdater: MultiItemTypeAdapter<T>){
+        hostRecyclerViewAdapter = apdater
     }
 
-    fun updateData(data: List<T>){
-        datas.clear()
-        datas.addAll(data)
+    fun getItemCount(): Int {
+        return hostRecyclerViewAdapter?.itemCount?:0
+    }
+
+    fun getData():List<T>{
+        return hostRecyclerViewAdapter?.getData()?: arrayListOf()
     }
 }
