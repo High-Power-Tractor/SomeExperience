@@ -5,7 +5,7 @@ import androidx.recyclerview.widget.RecyclerView
 
 class MultiItemTypeAdapter<T>: RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     private val datas: ArrayList<T> = arrayListOf()
-    private val itemAdapterMap = LinkedHashMap<Int, ItemAdapter<T>>()
+    private val itemAdapterMap = LinkedHashMap<Int, ItemAdapter<T, *>>()
     private val posAndViewTypeMap = HashMap<Int, Int>()
 
     fun updateData(data: List<T>){
@@ -17,7 +17,7 @@ class MultiItemTypeAdapter<T>: RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         notifyDataSetChanged()
     }
 
-    fun registerItemAdapter(itemAdapter: ItemAdapter<T>){
+    fun registerItemAdapter(itemAdapter: ItemAdapter<T, *>){
         if(itemAdapterMap.containsKey(itemAdapter.getItemViewType())){
             throw Exception("already exist viewType ${itemAdapter.getItemViewType()}")
         }
@@ -50,7 +50,7 @@ class MultiItemTypeAdapter<T>: RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         val viewType =  posAndViewTypeMap[position]?: throw Exception("no exist position ${position}")
         val itemAdapter = itemAdapterMap[viewType]?: throw Exception("no exist viewType ${viewType}")
-        itemAdapter.onBindViewHolder(holder, position)
+        itemAdapter.onBindViewHolder_inner(holder, position)
     }
 
     override fun getItemViewType(position: Int): Int {

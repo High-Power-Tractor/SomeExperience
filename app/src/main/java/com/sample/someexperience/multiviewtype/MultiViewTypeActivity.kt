@@ -33,17 +33,15 @@ class MultiViewTypeActivity : AppCompatActivity() {
         recycler_view.adapter = adapter
     }
 
-    class HeaderItemAdapter: ItemAdapter<ValueBean>() {
-        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
+    class HeaderItemAdapter: ItemAdapter<ValueBean, HeaderItemAdapter.HeaderItemViewHolder>() {
+        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): HeaderItemViewHolder {
             val itemView = LayoutInflater.from(parent.context)
                 .inflate(R.layout.item_multi_viewtype_header, parent, false)
-            return AdItemViewHolder(itemView)
+            return HeaderItemViewHolder(itemView)
         }
 
-        override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-            (holder as? AdItemViewHolder)?.let { adItemViewHolder ->
-                adItemViewHolder.contentView.text = "this is header"
-            }
+        override fun onBindViewHolder(holder: HeaderItemViewHolder, position: Int) {
+            holder.contentView.text = "this is header"
         }
 
         override fun getItemViewType(): Int {
@@ -54,23 +52,21 @@ class MultiViewTypeActivity : AppCompatActivity() {
             return datas[position] is HeaderWrapper
         }
 
-        class AdItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        class HeaderItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
             val contentView = itemView.findViewById<TextView>(R.id.content_view)
         }
 
     }
 
-    class FooterItemAdapter: ItemAdapter<ValueBean>() {
-        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
+    class FooterItemAdapter: ItemAdapter<ValueBean, FooterItemAdapter.FooterItemViewHolder>() {
+        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FooterItemViewHolder {
             val itemView = LayoutInflater.from(parent.context)
                 .inflate(R.layout.item_multi_viewtype_footer, parent, false)
-            return AdItemViewHolder(itemView)
+            return FooterItemViewHolder(itemView)
         }
 
-        override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-            (holder as? AdItemViewHolder)?.let { adItemViewHolder ->
-                adItemViewHolder.contentView.text = "this is Footer"
-            }
+        override fun onBindViewHolder(holder: FooterItemViewHolder, position: Int) {
+            holder.contentView.text = "this is Footer"
         }
 
         override fun getItemViewType(): Int {
@@ -81,23 +77,21 @@ class MultiViewTypeActivity : AppCompatActivity() {
             return datas[position] is FooterWrapper
         }
 
-        class AdItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        class FooterItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
             val contentView = itemView.findViewById<TextView>(R.id.content_view)
         }
 
     }
 
-    class ADItemAdapter: ItemAdapter<ValueBean>(){
-        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
+    class ADItemAdapter: ItemAdapter<ValueBean, ADItemAdapter.ADItemViewHolder>(){
+        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int):ADItemViewHolder {
             val itemView = LayoutInflater.from(parent.context)
                 .inflate(R.layout.item_multi_viewtype_ad, parent, false)
             return ADItemViewHolder(itemView)
         }
 
-        override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-            (holder as? ADItemViewHolder)?.let { adItemViewHolder ->
-                adItemViewHolder.contentView.text = "this is AD Unit"
-            }
+        override fun onBindViewHolder(holder: ADItemViewHolder, position: Int) {
+            holder.contentView.text = "this is AD Unit"
         }
 
         override fun getItemViewType(): Int {
@@ -114,17 +108,15 @@ class MultiViewTypeActivity : AppCompatActivity() {
 
     }
 
-    class NormalItemAdapter: DefaultItemAdaper<ValueBean>(){
-        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
+    class NormalItemAdapter: DefaultItemAdaper<ValueBean, NormalItemAdapter.NormalItemViewHolder>(){
+        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): NormalItemViewHolder {
             val itemView = LayoutInflater.from(parent.context)
                 .inflate(R.layout.item_multi_viewtype_layout_normal, parent, false)
             return NormalItemViewHolder(itemView)
         }
 
-        override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-            (holder as? NormalItemViewHolder)?.let { adItemViewHolder ->
-                adItemViewHolder.contentView.text = "this is normal ${datas[position].content} data"
-            }
+        override fun onBindViewHolder(holder: NormalItemViewHolder, position: Int) {
+            holder.contentView.text = "this is normal ${datas[position].content} data"
         }
 
         override fun getItemViewType(): Int {
