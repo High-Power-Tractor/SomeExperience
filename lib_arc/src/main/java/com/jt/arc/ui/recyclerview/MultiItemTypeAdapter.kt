@@ -3,6 +3,7 @@ package com.jt.arc.ui.recyclerview
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 
+
 /**
  * 用于多ViewType列表显示。目的：让每个ViewType对应处理逻辑能相互隔离开。
  * 每个ViewType对应一个SubAdapter实例，RecyclerView.Adapter中的onCreateViewHolder，onBindViewHolder等实现都指派给对应的SubAdapter执行。
@@ -13,6 +14,8 @@ class MultiItemTypeAdapter<T>(vararg subAdapters: SubAdapter<T, *>): RecyclerVie
     private val datas: ArrayList<T> = arrayListOf()
     private val viewType_subAdapterMap = LinkedHashMap<Int, SubAdapter<T, *>>()
     private val position_viewTypeMap = HashMap<Int, Int>()
+    private val existingSubAdapterClasses: HashSet<Class<*>> = HashSet()
+
 
     init {
         for (item in subAdapters) {
@@ -36,11 +39,13 @@ class MultiItemTypeAdapter<T>(vararg subAdapters: SubAdapter<T, *>): RecyclerVie
      * 注册SubAdapter，每个viewtype对应一个SubAdapter实例。
      */
     fun registerSubAdapter(subAdapter: SubAdapter<T, *>){
-        if(viewType_subAdapterMap.containsKey(subAdapter.getItemViewType())){
-            throw Exception("already exist viewType ${subAdapter.getItemViewType()}")
+        if(existingSubAdapterClasses.contains(subAdapter.javaClass)){
+            throw Exception("one subAdapter register more than once!")
         }
-        viewType_subAdapterMap[subAdapter.getItemViewType()] = subAdapter
-        subAdapter.attach(this)
+        existingSubAdapterClasses.add(subAdapter.javaClass)
+        val newViewTypeId = existingSubAdapterClasses.size //每个SubAdapter只能注册一次，所以使用当前SubAdapter个数作为ViewType ID值。
+        subAdapter.attach(this, newViewTypeId)
+        viewType_subAdapterMap[newViewTypeId] = subAdapter
 
         //确保DefaultSubAdapter只注册一次，且排在最后面
         var defaultSubAdapterKey = -1

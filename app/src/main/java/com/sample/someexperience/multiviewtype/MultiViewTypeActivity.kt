@@ -43,12 +43,6 @@ class MultiViewTypeActivity : AppCompatActivity() {
             holder.contentView.text = "this is header"
         }
 
-        //返回ViewType id，需求确保不同的SubAdapter对应的ID也必须不同；
-        //建议使用布局ID 或 自定义ID资源，可以保证不重复；
-        override fun getItemViewType(): Int {
-            return R.layout.item_multi_viewtype_header
-        }
-
         //判断列表中position这个位置是否Header item
         override fun isSameViewType(position: Int): Boolean {
             val listData = getData() //SubAdapter中可以通过getData()方法获取列表数据
@@ -74,10 +68,6 @@ class MultiViewTypeActivity : AppCompatActivity() {
             holder.contentView.text = "this is Footer"
         }
 
-        override fun getItemViewType(): Int {
-            return R.layout.item_multi_viewtype_footer
-        }
-
         override fun isSameViewType(position: Int): Boolean {
             return getData()[position] is FooterWrapper
         }
@@ -98,10 +88,6 @@ class MultiViewTypeActivity : AppCompatActivity() {
 
         override fun onBindViewHolder(holder: ADItemViewHolder, position: Int) {
             holder.contentView.text = "this is AD Unit"
-        }
-
-        override fun getItemViewType(): Int {
-            return R.layout.item_multi_viewtype_ad
         }
 
         override fun isSameViewType(position: Int): Boolean {
@@ -127,10 +113,6 @@ class MultiViewTypeActivity : AppCompatActivity() {
 
         override fun onBindViewHolder(holder: NormalItemViewHolder, position: Int) {
             holder.contentView.text = "this is normal ${getData()[position].content} data"
-        }
-
-        override fun getItemViewType(): Int {
-            return R.layout.item_multi_viewtype_layout_normal
         }
 
         class NormalItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {

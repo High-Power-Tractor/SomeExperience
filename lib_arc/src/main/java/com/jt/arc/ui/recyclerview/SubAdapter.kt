@@ -4,13 +4,12 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 
 abstract class SubAdapter<T, VH : RecyclerView.ViewHolder> {
+    private var viewType = 0
     private var hostRecyclerViewAdapter: MultiItemTypeAdapter<T>? = null
 
     abstract fun onCreateViewHolder(parent: ViewGroup): VH
 
     abstract fun onBindViewHolder(holder: VH, position: Int)
-
-    abstract fun getItemViewType(): Int
 
     abstract fun isSameViewType(position: Int): Boolean
 
@@ -18,8 +17,13 @@ abstract class SubAdapter<T, VH : RecyclerView.ViewHolder> {
         onBindViewHolder(holder as VH, position)
     }
 
-    internal fun attach(apdater: MultiItemTypeAdapter<T>){
+    internal fun attach(apdater: MultiItemTypeAdapter<T>, viewType: Int){
         hostRecyclerViewAdapter = apdater
+        this.viewType = viewType //分配viewType值
+    }
+
+    internal fun getItemViewType(): Int{
+        return viewType
     }
 
     fun getItemCount(): Int {
