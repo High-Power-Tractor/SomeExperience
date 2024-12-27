@@ -133,7 +133,7 @@ class MultiViewTypeActivity : AppCompatActivity() {
         result.add(ValueBean("eee"))
         result.add(ValueBean("fff"))
         result.add(ValueBean("ggg"))
-        result.add(ValueBean("hhh"))
+        result.add(ValueBean("kkk"))
         result.add(FooterWrapper())
         return result
     }
