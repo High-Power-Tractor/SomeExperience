@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.TextView
+import com.sample.someexperience.livedata.LiveDataTestActivity
 import com.sample.someexperience.multiviewtype.MultiViewTypeActivity
 import kotlinx.android.synthetic.main.activity_main.*
 
@@ -15,6 +16,9 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
         addTextView("RecyclerView中有多个ViewType") {
             startActivity(Intent(this, MultiViewTypeActivity::class.java))
+        }
+        addTextView("SingleLiveData测试") {
+            startActivity(Intent(this, LiveDataTestActivity::class.java))
         }
     }
 
