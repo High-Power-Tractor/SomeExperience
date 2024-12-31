@@ -23,4 +23,24 @@
         android:background="#298"
         android:text="发送数据"/>
 
+
+    <TextView
+        android:id="@+id/subscribe_sticky_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="50dp"
+        android:padding="10dp"
+        android:background="#298"
+        android:text="订阅数据-Sticky"/>
+
+
+    <TextView
+        android:id="@+id/send_sticky_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:padding="10dp"
+        android:background="#298"
+        android:text="发送数据-Sticky"/>
+
 </LinearLayout>
