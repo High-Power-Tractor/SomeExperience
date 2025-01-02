@@ -56,8 +56,14 @@ class LiveDataTestActivity: AppCompatActivity() {
     }
 
     private fun observeDataSticky(){
-        singleLiveDataSticky.observe(this, 1) {
+        val observeId = 1 //不同的订阅者，需要不同的ID
+        singleLiveDataSticky.observe(this, observeId) {
             Log.e(TAG, "received data-sticky: ${it}")
         }
+
+//        //只有一个订阅者时使用，方法内部生成默认ID
+//        singleLiveDataSticky.observeDefaultID(this) {
+//            Log.e(TAG, "received data-sticky: ${it}")
+//        }
     }
 }

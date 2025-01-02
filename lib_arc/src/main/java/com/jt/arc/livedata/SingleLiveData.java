@@ -58,7 +58,7 @@ public class SingleLiveData<T> {
         @Override
         final public void onChanged(SingleEvent<T>  t) {
             if(t == null) return;
-            if(createTime <= t.createTime){
+            if(createTime <= t.createTime){ //订阅者订阅的时间要早于数据更新的时间，才会向其分发数据
                 if(hostObserver != null){
                     hostObserver.onChanged(t.getValue());
                 }
