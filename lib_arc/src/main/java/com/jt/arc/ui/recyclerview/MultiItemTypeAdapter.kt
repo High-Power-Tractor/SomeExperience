@@ -1,6 +1,8 @@
 package com.jt.arc.ui.recyclerview
 
 import android.view.ViewGroup
+import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.GridLayoutManager.SpanSizeLookup
 import androidx.recyclerview.widget.RecyclerView
 
 
@@ -13,7 +15,7 @@ import androidx.recyclerview.widget.RecyclerView
 class MultiItemTypeAdapter<T>(vararg subAdapters: SubAdapter<T, *>): RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     private val datas: ArrayList<T> = arrayListOf()
     private val viewType_subAdapterMap = LinkedHashMap<Int, SubAdapter<T, *>>()
-    private val position_viewTypeMap = HashMap<Int, Int>()
+    private val position_subAdapterMap = HashMap<Int, SubAdapter<T, *>>()
     private val existingSubAdapterClasses: HashSet<Class<*>> = HashSet()
 
 
@@ -33,6 +35,19 @@ class MultiItemTypeAdapter<T>(vararg subAdapters: SubAdapter<T, *>): RecyclerVie
 
     fun getData(): List<T>{
         return datas
+    }
+
+    /**
+     * 设置GridLayoutManager的Spansize；需要继承SubAdapter实现getSpanSize方法
+     */
+    fun configSpanSizeLookup(layoutManager: GridLayoutManager){
+        layoutManager.spanSizeLookup = object : SpanSizeLookup() {
+            override fun getSpanSize(position: Int): Int {
+                val subAdapter =  position_subAdapterMap[position]
+                    ?: throw Exception("getSpanSize() not found subadpter at pos ${position}")
+                return subAdapter.getSpanSize(position)
+            }
+        }
     }
 
     /**
@@ -72,8 +87,8 @@ class MultiItemTypeAdapter<T>(vararg subAdapters: SubAdapter<T, *>): RecyclerVie
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        val viewType =  position_viewTypeMap[position]?: throw Exception("no exist position ${position}")
-        val subAdapter = viewType_subAdapterMap[viewType]?: throw Exception("no exist viewType ${viewType}")
+        val subAdapter =  position_subAdapterMap[position]
+            ?: throw Exception("onBindViewHolder() not found subadpter at pos ${position}")
         subAdapter.onBindViewHolder_inner(holder, position) //具体任务指派给对应的subAdapter执行
     }
 
@@ -81,7 +96,7 @@ class MultiItemTypeAdapter<T>(vararg subAdapters: SubAdapter<T, *>): RecyclerVie
         for (item in viewType_subAdapterMap.values) {
             if(item.isSameViewType(position)) {
                 val viewType = item.getItemViewType()
-                position_viewTypeMap[position] = viewType
+                position_subAdapterMap[position] = viewType_subAdapterMap[viewType] ?: throw Exception("no exist viewType ${viewType}")
                 return viewType
             }
         }

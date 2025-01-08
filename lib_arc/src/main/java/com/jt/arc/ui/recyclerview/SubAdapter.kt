@@ -13,6 +13,13 @@ abstract class SubAdapter<T, VH : RecyclerView.ViewHolder> {
 
     abstract fun isSameViewType(position: Int): Boolean
 
+    /**
+     * 使用GridLayoutManager时，使用该值配置SpanceSize
+     */
+    fun getSpanSize(position: Int): Int {
+        return 1
+    }
+
     internal fun onBindViewHolder_inner(holder: RecyclerView.ViewHolder, position: Int){
         onBindViewHolder(holder as VH, position)
     }
