@@ -16,7 +16,7 @@ abstract class SubAdapter<T, VH : RecyclerView.ViewHolder> {
     /**
      * 使用GridLayoutManager时，使用该值配置SpanceSize
      */
-    fun getSpanSize(position: Int): Int {
+    open fun getSpanSize(position: Int): Int {
         return 1
     }
 
