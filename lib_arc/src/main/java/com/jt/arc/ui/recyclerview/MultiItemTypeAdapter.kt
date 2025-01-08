@@ -1,5 +1,6 @@
 package com.jt.arc.ui.recyclerview
 
+import android.util.Log
 import android.view.ViewGroup
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.GridLayoutManager.SpanSizeLookup
@@ -43,8 +44,7 @@ class MultiItemTypeAdapter<T>(vararg subAdapters: SubAdapter<T, *>): RecyclerVie
     fun configSpanSizeLookup(layoutManager: GridLayoutManager){
         layoutManager.spanSizeLookup = object : SpanSizeLookup() {
             override fun getSpanSize(position: Int): Int {
-                val subAdapter =  position_subAdapterMap[position]
-                    ?: throw Exception("getSpanSize() not found subadpter at pos ${position}")
+                val subAdapter = findSubAdapter(position)
                 return subAdapter.getSpanSize(position)
             }
         }
@@ -93,13 +93,17 @@ class MultiItemTypeAdapter<T>(vararg subAdapters: SubAdapter<T, *>): RecyclerVie
     }
 
     override fun getItemViewType(position: Int): Int {
+        val subAdapter = findSubAdapter(position)
+        position_subAdapterMap[position] = subAdapter
+        return subAdapter.getItemViewType()
+    }
+
+    private fun findSubAdapter(position: Int): SubAdapter<T, *>{
         for (item in viewType_subAdapterMap.values) {
             if(item.isSameViewType(position)) {
-                val viewType = item.getItemViewType()
-                position_subAdapterMap[position] = viewType_subAdapterMap[viewType] ?: throw Exception("no exist viewType ${viewType}")
-                return viewType
+                return item
             }
         }
-        return super.getItemViewType(position)
+        throw Exception("not found subadpter at pos ${position}")
     }
 }
