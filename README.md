@@ -2,6 +2,8 @@ RecyclerView.Adpater中多ViewType类型封装：https://juejin.cn/post/73869584
 
 LiveData处理一次性事件（数据倒灌、粘性事件）：https://juejin.cn/post/7454960025037684787
 
+ViewModel向Activity/fragment主动获取数据：https://juejin.cn/post/7458094481104732186
+
 Usage:
 Step 1. Add the JitPack repository to your build file
 Add it in your root build.gradle at the end of repositories:

@@ -8,7 +8,7 @@ import java.util.concurrent.CountDownLatch
 
 class DataProvider<T>{
     private var mProvider: Provider<T>? = null
-    val mainHandler = Handler(Looper.getMainLooper())
+    private val mainHandler = Handler(Looper.getMainLooper())
 
 
     fun provide(lifecycleOwner: LifecycleOwner, provider: Provider<T>){
