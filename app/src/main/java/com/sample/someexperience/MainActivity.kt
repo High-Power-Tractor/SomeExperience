@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.TextView
+import com.sample.someexperience.dataProvider.DataProviderTestActivity
 import com.sample.someexperience.livedata.LiveDataTestActivity
 import com.sample.someexperience.multiviewtype.MultiViewTypeActivity
 import kotlinx.android.synthetic.main.activity_main.*
@@ -19,6 +20,9 @@ class MainActivity : AppCompatActivity() {
         }
         addTextView("SingleLiveData测试") {
             startActivity(Intent(this, LiveDataTestActivity::class.java))
+        }
+        addTextView("DataProvider测试") {
+            startActivity(Intent(this, DataProviderTestActivity::class.java))
         }
     }
 
